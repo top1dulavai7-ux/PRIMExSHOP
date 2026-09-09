@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>PRIMExSHOP</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;background:#050a0f;color:#fff;font-family:Arial,sans-serif}
+body{padding-bottom:82px}.app{max-width:760px;margin:auto}button{font:inherit}
+header{height:92px;background:#101824;border-bottom:1px solid #263244;display:flex;align-items:center;justify-content:space-between;padding:18px 28px;position:sticky;top:0;z-index:20}
+.logo{font-size:28px;font-weight:900;color:#00ed83}.logo b{color:#fff}.wallet-pill{background:#182538;border-radius:35px;padding:13px 18px;color:#00ed83;font-size:19px;font-weight:800}
+main{padding:28px}.page{display:none}.page.active{display:block}.hero{background:linear-gradient(135deg,#07583f,#122438);border:1px solid #075c48;border-radius:30px;padding:36px 32px;margin-bottom:28px}
+.hero h1{font-size:40px;line-height:1.05;margin:0 0 16px}.hero p{color:#b8c4ce;font-size:18px;line-height:1.5}.btn{background:#00e878;border:0;border-radius:13px;padding:14px 22px;font-weight:900;cursor:pointer;color:#00150b}
+.section-title{display:flex;justify-content:space-between;align-items:center;margin:28px 0 16px}.section-title h2{font-size:27px;margin:0}.green{color:#00ed83}
+.categories,.products{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.category{background:#111a27;border:1px solid #273449;border-radius:20px;padding:22px 10px;text-align:center;font-size:19px}.ico{font-size:46px;margin-bottom:8px}
+.card{background:#111925;border:1px solid #293548;border-radius:23px;padding:12px;overflow:hidden}.pic{height:145px;border-radius:17px;background:linear-gradient(135deg,#132a3a,#06261c);display:flex;align-items:center;justify-content:center;font-size:58px}
+.card h3{font-size:19px;margin:14px 2px 7px}.price{color:#00ed83;font-size:23px;font-weight:900;margin:8px 2px 13px}.card .btn{width:100%}
+.offer{background:#172338;border-radius:20px;padding:20px;margin:12px 0}.offer h3{margin:0 0 7px;color:#00ed83}.muted{color:#aeb8c2}
+.panel{background:#111925;border:1px solid #293548;border-radius:22px;padding:22px;margin-bottom:18px}
+input,select{width:100%;padding:14px;margin:7px 0;background:#07101a;border:1px solid #293548;border-radius:12px;color:#fff;outline:none}input:focus,select:focus{border-color:#00ed83}
+.bottom{position:fixed;bottom:0;left:0;right:0;height:78px;background:#0d1622;border-top:1px solid #263244;display:flex;justify-content:center;z-index:50}.nav{max-width:760px;width:100%;display:grid;grid-template-columns:repeat(6,1fr)}
+.nav button{border:0;background:none;color:#8794a3;font-size:11px;cursor:pointer}.nav button span{display:block;font-size:25px;margin-bottom:3px}.nav button.active{color:#00ed83}
+.modal{display:none;position:fixed;inset:0;background:#000b;z-index:100;align-items:center;justify-content:center;padding:18px}.modal.show{display:flex}.modalbox{width:100%;max-width:520px;background:#111925;border:1px solid #354256;border-radius:25px;padding:24px;max-height:90vh;overflow:auto}.close{float:right;background:none;border:0;color:#ff5b67;font-size:30px;cursor:pointer}
+.toast{position:fixed;left:50%;bottom:95px;transform:translateX(-50%);background:#162335;padding:12px 18px;border-radius:12px;display:none;z-index:200}.toast.show{display:block}
+.order{border-bottom:1px solid #293548;padding:12px 0}.status{color:#00ed83;font-weight:bold}
+@media(max-width:500px){main{padding:22px 28px}.hero{padding:31px 28px}.hero h1{font-size:35px}.products{grid-template-columns:repeat(2,1fr);gap:14px}.pic{height:135px}.card h3{font-size:17px}.price{font-size:21px}.wallet-pill{font-size:17px;padding:12px 15px}.logo{font-size:25px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header><div class="logo">PRIME<b>x</b>SHOP</div><div class="wallet-pill">💰 ৳ <span id="balance">0</span></div></header>
+
+<main>
+<section id="home" class="page active">
+<div class="hero"><h1>LEVEL UP YOUR GAME</h1><p>🎮 Fast gaming top-up, digital items, gift cards & gaming services.</p><button class="btn" onclick="show('shop')">SHOP NOW</button></div>
+<div class="section-title"><h2>🎮 Categories</h2></div>
+<div class="categories">
+<div class="category" onclick="show('topup')"><div class="ico">🔥</div>Free Fire</div>
+<div class="category" onclick="show('topup')"><div class="ico">🔫</div>PUBG</div>
+<div class="category" onclick="show('topup')"><div class="ico">⚽</div>FC Mobile</div>
+<div class="category" onclick="show('shop')"><div class="ico">👕</div>Jersey</div>
+</div>
+<div class="section-title"><h2>🔥 Best Sellers</h2><a class="green" onclick="show('shop')">View All</a></div>
+<div id="homeProducts" class="products"></div>
+<div class="section-title"><h2>🎁 Special Offers</h2></div>
+<div class="offer"><h3>🔥 FLASH SALE</h3><div>Selected products available at special prices.</div></div>
+</section>
+
+<section id="shop" class="page"><div class="section-title"><h2>🛒 Shop</h2></div><div id="shopProducts" class="products"></div></section>
+
+<section id="topup" class="page"><div class="section-title"><h2>⚡ Top-Up</h2></div><div id="topupProducts" class="products"></div></section>
+
+<section id="wallet" class="page">
+<div class="section-title"><h2>💰 My Wallet</h2></div>
+<div class="panel"><h1>৳ <span id="walletBalance">0</span></h1><p class="muted">Current wallet balance</p><button class="btn" onclick="openDeposit()">＋ Add Money</button></div>
+<div class="panel"><h3>Payment Numbers</h3><p>💗 bKash: <b class="green">01642268349</b></p><p>🟣 Nagad: Not set</p><p>🔴 Rocket: Not set</p></div>
+<div class="panel"><h3>Deposit Requests</h3><div id="deposits">No deposit request.</div></div>
+</section>
+
+<section id="orders" class="page"><div class="section-title"><h2>📦 Orders</h2></div><div class="panel" id="ordersList">Login to see your orders.</div></section>
+
+<section id="profile" class="page">
+<div class="section-title"><h2>👤 Profile</h2></div>
+<div class="panel">
+<div id="loggedOut"><input id="email" type="email" placeholder="Email"><input id="password" type="password" placeholder="Password"><button class="btn" onclick="login()">LOGIN</button><button class="btn" style="margin-left:8px" onclick="signup()">REGISTER</button></div>
+<div id="loggedIn" style="display:none"><h3 id="userEmail"></h3><p class="muted">Your account is connected to PRIMExSHOP.</p><button class="btn" onclick="logout()">LOG OUT</button></div>
+</div>
+<div class="panel"><h3>👑 Admin Show</h3><p class="muted">Admin only. Authorized email required.</p><button class="btn" onclick="adminLogin()">ADMIN SHOW</button></div>
+</section>
+</main>
+
+<div class="bottom"><div class="nav">
+<button class="active" onclick="show('home',this)"><span>🏠</span>Home</button>
+<button onclick="show('shop',this)"><span>🛒</span>Shop</button>
+<button onclick="show('topup',this)"><span>⚡</span>Top-Up</button>
+<button onclick="show('wallet',this)"><span>💰</span>Wallet</button>
+<button onclick="show('orders',this)"><span>📦</span>Orders</button>
+<button onclick="show('profile',this)"><span>👤</span>Profile</button>
+</div></div>
+
+<div id="modal" class="modal"><div class="modalbox"><button class="close" onclick="closeModal()">×</button><div id="modalContent"></div></div></div>
+<div id="toast" class="toast"></div>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import {getAuth,onAuthStateChanged,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import {getFirestore,collection,addDoc,getDocs,query,where,serverTimestamp,onSnapshot,doc,setDoc} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+const firebaseConfig={
+ apiKey:"AIzaSyCYMFI_Cb5e2EWeBkfbK47O-tYPsl_T10s",
+ authDomain:"primexshop-80231.firebaseapp.com",
+ projectId:"primexshop-80231",
+ storageBucket:"primexshop-80231.firebasestorage.app",
+ messagingSenderId:"1054993203224",
+ appId:"1:1054993203224:web:5347f82a92f00c28f1436d",
+ measurementId:"G-5WKNMLB7CN"
+};
+const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
+
+const products=[
+{name:"Free Fire 100 Diamonds",price:100,type:"topup",icon:"🔥"},
+{name:"Free Fire 530 Diamonds",price:450,type:"topup",icon:"🔥"},
+{name:"Free Fire 1080 Diamonds",price:850,type:"topup",icon:"🔥"},
+{name:"PUBG 60 UC",price:120,type:"topup",icon:"🔫"},
+{name:"FC Mobile Coins",price:100,type:"topup",icon:"⚽"},
+{name:"RED HWAKS Jersey",price:650,type:"jersey",icon:"👕"},
+{name:"JAW BREKARS Jersey",price:650,type:"jersey",icon:"👕"},
+{name:"TITAN E SPORTS CULB Jersey",price:650,type:"jersey",icon:"👕"}
+];
+
+let user=null,selected=null;
+
+function cards(list){
+return list.map((p,i)=>`<div class="card"><div class="pic">${p.icon}</div><h3>${p.name}</h3><div class="price">৳${p.price}</div><button class="btn" onclick="buy(${products.indexOf(p)})">BUY</button></div>`).join("");
+}
+document.getElementById("homeProducts").innerHTML=cards(products.slice(0,3));
+document.getElementById("shopProducts").innerHTML=cards(products);
+document.getElementById("topupProducts").innerHTML=cards(products.filter(p=>p.type==="topup"));
+
+window.show=(id,el)=>{
+document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));document.getElementById(id).classList.add("active");
+if(el){document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));el.classList.add("active")}
+window.scrollTo(0,0);loadOrders();
+};
+function modal(html){document.getElementById("modalContent").innerHTML=html;document.getElementById("modal").classList.add("show")}
+window.closeModal=()=>document.getElementById("modal").classList.remove("show");
+function toast(t){let x=document.getElementById("toast");x.textContent=t;x.classList.add("show");setTimeout(()=>x.classList.remove("show"),2200)}
+
+window.buy=i=>{
+selected=products[i];
+modal(`<h2>🛒 Order</h2><h3>${selected.name}</h3><p class="green">Price: ৳${selected.price}</p>
+${selected.type==="topup"?'<input id="uid" placeholder="Game UID / Player ID" required>':''}
+<input id="buyerPhone" placeholder="Phone Number" required>
+<input id="trx" placeholder="Payment Transaction ID">
+<p class="muted">bKash: <b class="green">01642268349</b></p>
+<button class="btn" onclick="placeOrder()">SUBMIT ORDER</button>`);
+};
+
+window.placeOrder=async()=>{
+if(!user){toast("Please login first");return}
+const phone=document.getElementById("buyerPhone").value.trim();
+if(!phone){toast("Enter phone number");return}
+try{
+await addDoc(collection(db,"orders"),{uid:user.uid,email:user.email,product:selected.name,price:selected.price,gameUid:document.getElementById("uid")?.value||"",phone,trx:document.getElementById("trx").value.trim(),status:"Pending",createdAt:serverTimestamp()});
+closeModal();toast("Order submitted successfully");loadOrders();
+}catch(e){toast(e.message)}
+};
+
+window.openDeposit=()=>{
+modal(`<h2>➕ Add Money</h2><p>💗 <b class="green">bKash: 01642268349</b></p><select id="method"><option>bKash</option><option>Nagad</option><option>Rocket</option></select><input id="amount" type="number" placeholder="Amount"><input id="depositTrx" placeholder="Transaction ID"><button class="btn" onclick="deposit()">SUBMIT DEPOSIT</button>`);
+};
+window.deposit=async()=>{
+if(!user){toast("Please login first");return}
+const amount=Number(document.getElementById("amount").value),trx=document.getElementById("depositTrx").value.trim();
+if(!amount||!trx){toast("Enter amount and transaction ID");return}
+try{await addDoc(collection(db,"deposits"),{uid:user.uid,email:user.email,method:document.getElementById("method").value,amount,trx,status:"Pending",createdAt:serverTimestamp()});closeModal();toast("Deposit request submitted")}catch(e){toast(e.message)}
+};
+
+window.signup=async()=>{
+try{await createUserWithEmailAndPassword(auth,document.getElementById("email").value,document.getElementById("password").value);toast("Account created")}catch(e){toast(e.message)}
+};
+window.login=async()=>{
+try{await signInWithEmailAndPassword(auth,document.getElementById("email").value,document.getElementById("password").value);toast("Login successful")}catch(e){toast(e.message)}
+};
+window.logout=async()=>{await signOut(auth);toast("Logged out")};
+
+onAuthStateChanged(auth,u=>{
+user=u;
+document.getElementById("loggedOut").style.display=u?"none":"block";
+document.getElementById("loggedIn").style.display=u?"block":"none";
+if(u){document.getElementById("userEmail").textContent=u.email;loadOrders();loadDeposits()}
+else document.getElementById("ordersList").textContent="Login to see your orders.";
+});
+
+async function loadOrders(){
+if(!user)return;
+try{
+const q=query(collection(db,"orders"),where("uid","==",user.uid));const s=await getDocs(q);
+document.getElementById("ordersList").innerHTML=s.empty?"No orders yet.":Array.from(s.docs).map(d=>{let x=d.data();return `<div class="order"><b>${x.product}</b><br>৳${x.price}<br>Status: <span class="status">${x.status}</span></div>`}).join("");
+}catch(e){document.getElementById("ordersList").textContent="Unable to load orders."}
+}
+async function loadDeposits(){
+if(!user)return;
+try{
+const q=query(collection(db,"deposits"),where("uid","==",user.uid));const s=await getDocs(q);
+document.getElementById("deposits").innerHTML=s.empty?"No deposit request.":Array.from(s.docs).map(d=>{let x=d.data();return `<div class="order">৳${x.amount} • ${x.method}<br>TRX: ${x.trx}<br>Status: <span class="status">${x.status}</span></div>`}).join("");
+}catch(e){}
+}
+
+const adminEmail = "adminprime@gmail.com";
+
+window.adminLogin=()=>{
+  const email=prompt("ADMIN EMAIL");
+  if(!email || email.trim().toLowerCase()!==adminEmail.toLowerCase()){
+    alert("Admin access denied.");
+    return;
+  }
+  if(!user){
+    alert("Please login first with adminprime@gmail.com.");
+    show("profile");
+    return;
+  }
+  if(user.email?.toLowerCase()===adminEmail.toLowerCase()) showAdmin();
+  else alert("Admin access denied.");
+};
+async function showAdmin(){
+  try{
+    const snap=await getDocs(collection(db,"orders"));
+    const orders=snap.docs.map(d=>({id:d.id,...d.data()}));
+    orders.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+
+    const html=orders.length?orders.map((o,i)=>{
+      const date=o.createdAt?.toDate?o.createdAt.toDate().toLocaleString():"Time unavailable";
+      const status=o.status||"Pending";
+      const buttons=status==="Pending"
+        ? `<div style="display:flex;gap:8px;margin-top:12px">
+             <button class="btn" style="flex:1" onclick="updateOrderStatus('${o.id}','Approved')">✅ APPROVE</button>
+             <button class="btn" style="flex:1;background:#ff5b67;color:#fff" onclick="updateOrderStatus('${o.id}','Rejected')">❌ REJECT</button>
+           </div>`:"";
+      return `<div class="order" style="background:#0b1420;border:1px solid #293548;border-radius:14px;padding:14px;margin:10px 0">
+        <b>ORDER #${i+1}</b>
+        <br>🛒 Product: <b>${o.product||"N/A"}</b>
+        <br>💰 Price: ৳${o.price||0}
+        <br>👤 User: ${o.email||"N/A"}
+        <br>📱 Number: ${o.phone||"N/A"}
+        ${o.gameUid?`<br>🎮 Game UID: ${o.gameUid}`:""}
+        <br>🧾 Transaction ID: ${o.trx||"Not provided"}
+        <br>📅 ${date}
+        <br>📌 Status: <span class="status">${status}</span>
+        ${buttons}
+      </div>`;
+    }).join(""):"<p class='muted'>No orders yet.</p>";
+
+    modal(`<h2>👑 ADMIN SHOW</h2>
+      <div class="panel"><h3>📊 All Orders</h3><p>Total: <b>${orders.length}</b></p></div>
+      <div class="panel">${html}</div>`);
+  }catch(e){alert("Admin data load failed: "+e.message);}
+}
+
+window.updateOrderStatus=async(id,status)=>{
+  try{
+    await setDoc(doc(db,"orders",id),{status:status},{merge:true});
+    toast(status==="Approved"?"Order Approved ✅":"Order Rejected ❌");
+    showAdmin();
+    loadOrders();
+  }catch(e){alert("Status update failed: "+e.message);}
+};
+</script>
+</div>
+</body>
+</html>
